@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+  frontend:
+    image: node:10
+    container_name: front-app
+    working_dir: /var/www/app
+    command: bash -c 'yarn && yarn run build && cp -r dist/* server-public/'
+    volumes:
+      - ./frontend/:/var/www/app/
+      - ./public/:/var/www/app/server-public/
+      - ./frontend/node_modules:/var/www/app/node_modules
+  api:
+    image: node:8
+    container_name: back-api
+    working_dir: /var/www/api
+    command: bash -c 'yarn && yarn run prod'
+    volumes:
+      - ./:/var/www/api
+      - ./node_modules:/var/www/api/node_modules
+    ports:
+      - 3000:3000
+    depends_on:
+      - frontend
